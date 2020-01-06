@@ -4,6 +4,8 @@
 # Written by Yichen Qian
 # --------------------------------------------------------
 
+import os
+
 import tensorflow as tf
 
 flags = tf.app.flags
@@ -20,11 +22,11 @@ flags.DEFINE_float('lambda_gan', 1, 'weight of the loss for gan loss')
 flags.DEFINE_float('lambda_gp', 10, 'weight of the loss for gradient penalty on parameter of D')
 
 # For training
-flags.DEFINE_integer('dataset_size', 297369, 'number of non-normal face set')
-flags.DEFINE_string('profile_path', '', 'dataset path')  # casia_aligned_250_250_jpg
-flags.DEFINE_string('profile_list', '', 'train profile list')
-flags.DEFINE_string('front_path', '', 'front data path')
-flags.DEFINE_string('front_list', '', 'train front list')
+flags.DEFINE_integer('dataset_size', 13233, 'number of non-normal face set')
+flags.DEFINE_string('profile_path', os.path.expanduser("~/datasets/lfw/raw/"), 'dataset path')  # casia_aligned_250_250_jpg
+flags.DEFINE_string('profile_list', os.path.expanduser("~/datasets/lfw/raw.txt"), 'train profile list')
+flags.DEFINE_string('front_path', os.path.expanduser("~/datasets/lfw/raw/"), 'front data path')
+flags.DEFINE_string('front_list', os.path.expanduser("~/datasets/lfw/raw.txt"), 'train front list')
 flags.DEFINE_string('test_path', '', 'front data path')
 flags.DEFINE_string('test_list', '', 'train front list')
 flags.DEFINE_boolean('is_train', True, 'train or test')
@@ -33,7 +35,7 @@ flags.DEFINE_string('face_model', 'resnet50.npy', 'face model path')
 flags.DEFINE_string('checkpoint', 'checkpoint/fnm', 'checkpoint directory')
 flags.DEFINE_string('summary_dir', 'log/fnm', 'logs directory')
 flags.DEFINE_string('checkpoint_ft', 'checkpoint/fnm/ck-09', 'finetune or test checkpoint path')
-flags.DEFINE_integer('batch_size', 16, 'batch size')
+flags.DEFINE_integer('batch_size', 8, 'batch size')
 flags.DEFINE_integer('epoch', 10, 'epoch')
 flags.DEFINE_integer('critic', 1, 'number of D training times')
 flags.DEFINE_integer('save_freq', 1000, 'the frequency of saving model')

@@ -28,20 +28,24 @@ class loadData(object):
 
     def __init__(self, batch_size=20, train_shuffle=True):
         self.batch_size = batch_size
-        self.profile = np.loadtxt(cfg.profile_list, dtype='string', delimiter=',')
-        self.front = np.loadtxt(cfg.front_list, dtype='string', delimiter=',')
+        self.profile = np.loadtxt(cfg.profile_list, dtype=str, delimiter=',')
+        self.front = np.loadtxt(cfg.front_list, dtype=str, delimiter=',')
 
         if (train_shuffle):
             np.random.shuffle(self.profile)
             np.random.shuffle(self.front)
 
-        self.test_list = np.loadtxt(cfg.test_list, dtype='string', delimiter=',')  #
-        self.test_index = 0
+        if os.path.exists(cfg.test_list):
+            self.test_list = np.loadtxt(cfg.test_list, dtype=str, delimiter=',')  #
+            self.test_index = 0
+        else:
+            self.test_list = []
+            self.test_index = 0
 
         # Crop Box: left, upper, right, lower
         self.crop_box = [(cfg.ori_width - cfg.width) / 2, (cfg.ori_height - cfg.height) / 2,
                          (cfg.ori_width + cfg.width) / 2, (cfg.ori_height + cfg.height) / 2]
-        assert Image.open(os.path.join(cfg.profile_path, self.profile[0])).size == (cfg.ori_width, cfg.ori_height)
+        # assert Image.open(os.path.join(cfg.profile_path, self.profile[0])).size == (cfg.ori_width, cfg.ori_height)
 
     def get_train(self):
         """Get train images
@@ -61,9 +65,11 @@ class loadData(object):
 
             _, profile_value = tf.WholeFileReader().read(profile_files)
             profile_value = tf.image.decode_jpeg(profile_value, channels=cfg.channel)
+            profile_value = tf.image.resize(profile_value, (cfg.ori_width, cfg.ori_height))
             profile_value = tf.cast(profile_value, tf.float32)
             _, front_value = tf.WholeFileReader().read(front_files)
             front_value = tf.image.decode_jpeg(front_value, channels=cfg.channel)
+            front_value = tf.image.resize(front_value, (cfg.ori_width, cfg.ori_height))
             front_value = tf.cast(front_value, tf.float32)
 
             # Flip, crop and adjust brightness of  image

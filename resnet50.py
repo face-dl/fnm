@@ -23,7 +23,7 @@ class Resnet50(object):
     """
 
     def __init__(self, resnet50_npy_path=None):
-        self.data_dict = np.load(cfg.face_model, encoding='latin1').item()
+        self.data_dict = np.load(cfg.face_model, encoding='latin1', allow_pickle=True).item()
         print("npy file loaded")
 
     def build(self):

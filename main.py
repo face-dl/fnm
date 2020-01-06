@@ -79,16 +79,18 @@ def main(_):
                     saver.save(sess, os.path.join(cfg.checkpoint, 'ck-%02d' % (epoch)))  #
 
                     # test
-                    fl, dl, gl = 0., 0., 0.
-                    for i in range(50):  # 25791 / 16
-                        te_profile, te_front = data_feed.get_test_batch(cfg.batch_size)
-                        dl_, gl_, fl_, images = sess.run([net.d_loss, net.g_loss, net.feature_loss, net.gen_p],
-                                                         {profile: te_profile, front: te_front, net.is_train: False})  #
-                        data_feed.save_images(images, epoch)
-                        dl += dl_;
-                        gl += gl_;
-                        fl += fl_
-                    print('Testing: Fea Loss:%.1f, D Loss:%.1f, G Loss:%.1f' % (fl, dl, gl))
+                    ignore_test = True
+                    if not ignore_test:
+                        fl, dl, gl = 0., 0., 0.
+                        for i in range(50):  # 25791 / 16
+                            te_profile, te_front = data_feed.get_test_batch(cfg.batch_size)
+                            dl_, gl_, fl_, images = sess.run([net.d_loss, net.g_loss, net.feature_loss, net.gen_p],
+                                                             {profile: te_profile, front: te_front, net.is_train: False})  #
+                            data_feed.save_images(images, epoch)
+                            dl += dl_;
+                            gl += gl_;
+                            fl += fl_
+                        print('Testing: Fea Loss:%.1f, D Loss:%.1f, G Loss:%.1f' % (fl, dl, gl))
 
         # Close Threads
         coord.request_stop()
